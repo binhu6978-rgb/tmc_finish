@@ -1,0 +1,10 @@
+{
+  "compared_rounds": 2,
+  "profile_dispatch_mismatch": 0,
+  "client_dispatch_mismatch": 0,
+  "same_completed_length": true,
+  "both_complete50": false,
+  "round0_backbones_equal": true,
+  "final_global_equal": true,
+  "valid_paired_dispatch": true
+}

@@ -1,0 +1,18 @@
+# Only change data_root / output placement for the registered server experiment.
+dataset: cifar100
+rounds: 50
+seed: 1
+local_epochs: 5
+batch_size: 50
+lr: 0.01
+lr_decay: 0.998
+momentum: 0.5
+weight_decay: 0.0001
+eval_batch_size: 128
+embedding_dim: 128
+n_proto: 5
+anchor_ema: 0.9
+reliability_window: 5
+diagnostic_rounds: [5, 10, 20, 30, 40, 49]
+gate_enabled: false
+data_root: null

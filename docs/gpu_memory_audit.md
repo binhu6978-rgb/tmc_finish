@@ -1,0 +1,17 @@
+# 显存与执行成本
+
+所有7profiles初始状态与非活跃模型在CPU；每次只有一个实际训练模型、私有adapter/classifier/frozen head和该槽位SGD在GPU。上传delta立即移到CPU，LOO按一个counterfactual、一个Full evaluator顺序计算，没有11套GPU模型。每轮结束释放临时张量，禁止保留backward计算图。
+
+本机仅物理GPU0，RTX4080SUPER 16376MiB。最终两组各2轮真实检查，包含Full-profile本地训练、batch128的Full验证及10次LOO：各进程peak allocated约527.84MiB，peak reserved756MiB。两组分别约26.1/25.8秒。这个短程使用500张diagnostic validation，不能直接按比例声称正式50轮耗时；服务器5000张验证前向更多，且两进程共享GPU会竞争。
+
+七模型最初构建在CPU，因此本地原summary的construction_peak_reserved=0表示初始化时尚未把模型驻留GPU，不代表CUDA训练零开销。后续入口记录每个模型移入CUDA后的allocated峰值；另保留完整短运行的max allocated/reserved。不能只用adapter参数少来推断双任务安全。
+
+`src.resources`会在实际物理GPU1上读取total/free及其他进程占用，单任务初始空闲不足4096MiB直接退出。然后两个版本各顺序真实2轮，测完整训练/评估峰值，估算：
+
+required_free_MiB = 1.30*(reserved_peak_A+reserved_peak_B)+2*768+1024。
+
+30%比例余量之外，每进程768MiB用于框架峰值未包含的context/driver等，额外1024MiB用于未建模余量。正式验证与测量使用相同batch128，LOO顺序执行；本地减少的是样本总数，不是峰值batch。CPU memory随private bank和当前上传增长不代表同量GPU驻留。
+
+检查后再次读取空闲量，只有满足才允许并行。输出是安全估算，服务器其他任务之后仍可能变化；OOM等错误保留error.log和status，绝不自动降batch或覆盖重跑。没有实测过本机不存在的物理GPU1。失败时输出GPU1_PARALLEL_NOT_SAFE，串行需用户显式执行独立脚本。
+
+50000张训练图像不复制进包。完整正式6个snapshot/组保存CPU base＋本轮raw native deltas＋prototype，通常需数GB磁盘；保留至少10GB可用空间。raw features没有保存，后续不能重构另一adapter/head下的样本表示。

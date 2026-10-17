@@ -1,0 +1,19 @@
+{
+  "status": "PROJECT_READY_FOR_SERVER",
+  "formal_training_started": false,
+  "local_final_rounds_per_arm": 2,
+  "local_development_total_rounds": 8,
+  "checks_passed": 10,
+  "checks_total": 10,
+  "actual_profile_dispatch_mismatch": 0,
+  "actual_client_dispatch_mismatch": 0,
+  "round0_backbones_equal": true,
+  "final_global_equal": true,
+  "physical_local_gpu": 0,
+  "server_physical_gpu": 1,
+  "server_gpu1_parallel_status": "NOT_YET_MEASURED_REQUIRE_RUNTIME_PRECHECK",
+  "local_statistical_conclusion": "INSUFFICIENT_EVIDENCE",
+  "architecture": "clean619c02e ResNet18 seven profiles",
+  "semantic_training": "verified initial31c8e8c joint taskCE+semanticCE",
+  "fixed_candidate": "score reference replacement only; zero extra trainable parameters"
+}

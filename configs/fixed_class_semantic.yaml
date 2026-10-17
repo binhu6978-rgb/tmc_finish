@@ -1,0 +1,3 @@
+experiment: FIXED_CLASS_SEMANTIC_EVIDENCE
+reference: fixed_class
+# Replace the SCORING reference only. No fixed-class training loss or extra layer.

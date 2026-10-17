@@ -1,0 +1,12 @@
+{
+  "torch": "2.7.1+cu128",
+  "numpy": "2.5.2",
+  "cuda_visible_devices": "0",
+  "logical_device": "cuda:0",
+  "gpu": "NVIDIA GeForce RTX 4080 SUPER",
+  "source_baseline_commit": "619c02e",
+  "semantic_local_source_commit": "31c8e8cf73ea02f509dcf442e91d792c4542b570",
+  "gate_enabled": false,
+  "coverage_scaling": false,
+  "train_augmentation": "none"
+}

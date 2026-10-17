@@ -1,0 +1,13 @@
+{
+  "state": "complete",
+  "rounds": 2,
+  "formal_complete50": false,
+  "local_validation_only": true,
+  "wall_seconds": 26.07406630006153,
+  "reserved_evaluation_accessed": false,
+  "gate_enabled": false,
+  "construction_peak_reserved": 0,
+  "gpu_model_construction_allocated_peak": 112808448,
+  "max_memory_allocated": 553481728,
+  "max_memory_reserved": 792723456
+}
