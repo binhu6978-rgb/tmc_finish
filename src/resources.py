@@ -26,6 +26,16 @@ def main(args):
         report['other_gpu_processes']=subprocess.check_output(
             ['nvidia-smi','-i',str(args.gpu),'--query-compute-apps=pid,process_name,used_memory',
              '--format=csv,noheader'],text=True).strip()
+        if args.performance:
+            # The user requests no repeated training checks. Only query currently
+            # free memory against the documented conservative two-process budget.
+            report['required_free_mib']=args.required_free_mib
+            safe=report['before']['free_mib']>=args.required_free_mib
+            report['state']='GPU1_PARALLEL_MEMORY_ESTIMATE_OK' if safe else 'GPU1_PARALLEL_NOT_SAFE'
+            report['training_started']=False
+            save();print(json.dumps(report,indent=2))
+            if not safe:raise SystemExit(2)
+            return
         if args.inspect_only:report['state']='INSPECTED_ONLY';save();print(json.dumps(report,indent=2));return
         # Allow one full training process only with a conservative pre-measurement floor.
         if report['before']['free_mib']<4096:
@@ -65,4 +75,5 @@ def main(args):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--gpu',type=int,default=1);p.add_argument('--inspect-only',action='store_true')
+    p.add_argument('--performance',action='store_true');p.add_argument('--required-free-mib',type=int,default=6144)
     main(p.parse_args())

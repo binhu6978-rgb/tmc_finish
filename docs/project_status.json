@@ -1,19 +1,49 @@
 {
-  "status": "PROJECT_READY_FOR_SERVER",
-  "formal_training_started": false,
-  "local_final_rounds_per_arm": 2,
-  "local_development_total_rounds": 8,
-  "checks_passed": 10,
-  "checks_total": 10,
-  "actual_profile_dispatch_mismatch": 0,
-  "actual_client_dispatch_mismatch": 0,
-  "round0_backbones_equal": true,
-  "final_global_equal": true,
-  "physical_local_gpu": 0,
-  "server_physical_gpu": 1,
-  "server_gpu1_parallel_status": "NOT_YET_MEASURED_REQUIRE_RUNTIME_PRECHECK",
-  "local_statistical_conclusion": "INSUFFICIENT_EVIDENCE",
-  "architecture": "clean619c02e ResNet18 seven profiles",
-  "semantic_training": "verified initial31c8e8c joint taskCE+semanticCE",
-  "fixed_candidate": "score reference replacement only; zero extra trainable parameters"
+  "status": "READY_FOR_300",
+  "performance_300": {
+    "formal_training_started": false,
+    "arms": [
+      "SEMANTIC_MEASUREMENT_ONLY",
+      "VERIFIED_SEMANTIC_BOUNDED_GATE"
+    ],
+    "local_real_rounds_per_arm": 2,
+    "local_validation_samples": 500,
+    "formal_validation_samples": 5000,
+    "saved_checkpoints": false,
+    "resume_supported": false,
+    "test_suite_run_this_upgrade": false,
+    "source_hash_framework_added": false,
+    "server_gpu1_physically_measured": false,
+    "parallel_preflight": "read-only nvidia-smi free memory >=6144MiB; no repeated short training",
+    "local_full_accuracy_b0": [
+      1.2,
+      4.0
+    ],
+    "local_full_accuracy_b1": [
+      1.2,
+      3.4
+    ],
+    "local_b1_aggregate_relative_change_mean": 0.00024924149466210553,
+    "interpretation": "Execution ready, intervention weak; no performance improvement established",
+    "historical_method_identity": "E5 formula transfer under current joint CE and paper aggregation, not historical G5 reproduction"
+  },
+  "legacy_50_round_diagnostics": {
+    "status": "PROJECT_READY_FOR_SERVER",
+    "formal_training_started": false,
+    "local_final_rounds_per_arm": 2,
+    "local_development_total_rounds": 8,
+    "checks_passed": 10,
+    "checks_total": 10,
+    "actual_profile_dispatch_mismatch": 0,
+    "actual_client_dispatch_mismatch": 0,
+    "round0_backbones_equal": true,
+    "final_global_equal": true,
+    "physical_local_gpu": 0,
+    "server_physical_gpu": 1,
+    "server_gpu1_parallel_status": "NOT_YET_MEASURED_REQUIRE_RUNTIME_PRECHECK",
+    "local_statistical_conclusion": "INSUFFICIENT_EVIDENCE",
+    "architecture": "clean619c02e ResNet18 seven profiles",
+    "semantic_training": "verified initial31c8e8c joint taskCE+semanticCE",
+    "fixed_candidate": "score reference replacement only; zero extra trainable parameters"
+  }
 }

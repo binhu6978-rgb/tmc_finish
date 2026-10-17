@@ -1,0 +1,8 @@
+experiment: VERIFIED_SEMANTIC_BOUNDED_GATE
+rounds: 300
+measure_flip: true
+gate_enabled: true
+critical_layer_count: 3
+diagnostic_rounds: [5, 19, 49, 74, 99, 124, 149, 199, 249, 299]
+reference: historical_anchor
+intervention: E5_ALL_REF_BDRC_TRANSFER

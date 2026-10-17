@@ -54,12 +54,22 @@ def train_and_measure(net,dataset,ids,cid,round_id,slot,cfg,bank,device):
     net.eval();a.eval();sums=torch.zeros(100,dim,device=device);counts=torch.zeros(100,dtype=torch.long,device=device)
     loader=DataLoader(Subset(dataset,list(dict.fromkeys(ids))),batch_size=cfg['batch_size'],shuffle=False,
                       generator=torch.Generator().manual_seed(seed+31),num_workers=0)
+    flip_sums=torch.zeros_like(sums) if cfg.get('measure_flip',False) else None
+    clean_forwards=flip_forwards=0
+    flip_seconds=0.
     with torch.inference_mode():
         for x,y in loader:
             x=x.to(device);y=y.to(device)
             f=F.adaptive_avg_pool2d(net(x)['representation'],1).flatten(1)
             z=F.normalize(h(a(f)),dim=1,eps=1e-12)
             sums.index_add_(0,y,z);counts+=torch.bincount(y,minlength=100)
+            clean_forwards+=1
+            if flip_sums is not None:
+                tick=time.perf_counter()
+                f_flip=F.adaptive_avg_pool2d(net(x.flip(-1))['representation'],1).flatten(1)
+                z_flip=F.normalize(h(a(f_flip)),dim=1,eps=1e-12)
+                flip_sums.index_add_(0,y,z_flip);flip_forwards+=1
+                flip_seconds+=time.perf_counter()-tick
     means=sums.cpu()/counts.cpu().clamp(min=1)[:,None];counts=counts.cpu()
     valid=(counts>=cfg['n_proto'])&(means.norm(dim=1)>1e-12)
     p=F.normalize(means,dim=1,eps=1e-12)
@@ -69,6 +79,16 @@ def train_and_measure(net,dataset,ids,cid,round_id,slot,cfg,bank,device):
                joint_training_wall_seconds=trained-started,
                prototype_measurement_wall_seconds=time.perf_counter()-trained,
                prototype_concentration=float(means.norm(dim=1)[valid].mean()) if valid.any() else None)
+    if flip_sums is not None:
+        flip_means=flip_sums.cpu()/counts.clamp(min=1)[:,None]
+        flip_valid=valid&(flip_means.norm(dim=1)>1e-12)
+        fp=F.normalize(flip_means,dim=1,eps=1e-12)
+        cosines=(p*fp).sum(1).clamp(-1,1)
+        stability=float((((1+cosines[flip_valid])/2)*counts[flip_valid]).sum()/counts[flip_valid].sum()) if flip_valid.any() else None
+        stats.update(stability=stability,risk=None if stability is None else 1-stability,
+            class_flip_cosines={str(c):float(cosines[c]) for c in torch.where(flip_valid)[0].tolist()},
+            clean_measurement_forwards=clean_forwards,flip_measurement_forwards=flip_forwards,
+            flip_measurement_wall_seconds=flip_seconds,probe_deduplicated_samples=int(counts.sum()))
     return p,counts,valid,stats
 
 
